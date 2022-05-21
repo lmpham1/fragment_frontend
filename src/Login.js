@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button";
 import {Auth, getUser} from './auth';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Login(){
     async function signOut() {
