@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
@@ -7,20 +7,27 @@ import { Button } from 'react-bootstrap';
 
 import { getUserFragments } from './api';
 import { Auth, getUser } from './auth';
+import CreateFragment from './createFragment';
 
 function App() {
+  let isSignedIn = true;
   async function signOut() {
     console.log("signing out");
     await Auth.signOut();
+    isSignedIn = false;
     window.location.reload(false);
   }
   const [user, setUser] = useState({});
-  const Greeting = (props) => {
+  useEffect(() => {
+    if (isSignedIn && !user.username){
     getUser().then((result) => {
       setUser(result);
       // Do an authenticated request to the fragments API server and log the result
       getUserFragments(result);
     });
+  }
+  })
+  const Greeting = (props) => {
     if (user)
       return (
         <div>
@@ -36,6 +43,7 @@ function App() {
       <header className="App-header">
         <h1>Fragments UI</h1>
         <Greeting signOut={signOut}/>
+        <CreateFragment/>
       </header>
     </div>
   );

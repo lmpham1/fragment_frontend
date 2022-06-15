@@ -10,14 +10,7 @@ export default function CreateFragment(){
         console.log("handled submission " + value);
         const user = await getUser();
         console.log(user);
-        createFragmentData(user, {
-            id: nanoid(),
-            ownerid: user.username,
-            size: value.length,
-            created: JSON.stringify(new Date()),
-            type: 'text/plain',
-            data: value
-        })
+        createFragmentData(user, value);
     }
     const handleChange = function(e){
         setValue(e.target.value);
