@@ -1,10 +1,40 @@
-.App {
-  text-align: center;
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.greeting{
+  text-align: center;
+}
+
+.fragment-form{
+  width: 50vw;
+  margin: 10px 0px;
+}
+
+.fragment-form h5{
+  display: inline-block;
+}
+
+.fragment-form label{
+  font-size: 20px;
+}
+
+.fragment-type-list{
+  list-style-type: none;
+  display: flex;
+  padding-left: 0%;
+}
+
+.fragment-type-list li button{
+  border-radius: 0%;
+  background-color: white;
+  color: black;
+}
+
+.fragment-type-list li button.active{
+  color: white;
+  background-color: #0a58ca;
 }
 
 @media (prefers-reduced-motion: no-preference) {

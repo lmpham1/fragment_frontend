@@ -30,9 +30,9 @@ function App() {
   const Greeting = (props) => {
     if (user)
       return (
-        <div>
+        <div className="greeting">
           <h2>Hello {user.username}!</h2>
-          <Button onClick={props.signOut}>Logout</Button>
+          <Button variant="secondary" onClick={props.signOut}>Logout</Button>
         </div>
       );
     else return <></>;
