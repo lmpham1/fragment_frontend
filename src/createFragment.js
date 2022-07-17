@@ -9,7 +9,7 @@ export default function CreateFragment(){
         setFormType(e.target.value);
     }
     useEffect(() => {
-        console.log(formType)
+        //console.log(formType)
     }, [formType]);
     return(
         <div className="fragment-form">
