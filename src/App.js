@@ -8,6 +8,7 @@ import { Button } from 'react-bootstrap';
 import { getUserFragments } from './api';
 import { Auth, getUser } from './auth';
 import CreateFragment from './createFragment';
+import FragmentTable from './fragmentTable';
 
 function App() {
   let isSignedIn = true;
@@ -20,11 +21,11 @@ function App() {
   const [user, setUser] = useState({});
   useEffect(() => {
     if (isSignedIn && !user.username){
-    getUser().then((result) => {
-      setUser(result);
-      // Do an authenticated request to the fragments API server and log the result
-      getUserFragments(result);
-    });
+      getUser().then((result) => {
+        setUser(result);
+        // Do an authenticated request to the fragments API server and log the result
+        getUserFragments(result);
+      });
   }
   })
   const Greeting = (props) => {
@@ -44,6 +45,7 @@ function App() {
         <h1>Fragments UI</h1>
         <Greeting signOut={signOut}/>
         <CreateFragment/>
+        <FragmentTable></FragmentTable>
       </header>
     </div>
   );

@@ -7,11 +7,10 @@ const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
  * fragments microservice (currently only running locally). We expect a user
  * to have an `idToken` attached, so we can send that along with the request.
  */
-export async function getUserFragments(user) {
-  console.log(process.env.REACT_APP_API_URL);
+export async function getUserFragments(user, expand = false) {
   //console.log('Requesting user fragments data...');
   try {
-    const res = await fetch(`${apiUrl}/v1/fragments`, {
+    const res = await fetch(`${apiUrl}/v1/fragments?expand=${expand ? 1 : 0}`, {
       // Generate headers with the proper Authorization bearer token to pass
       headers: user.authorizationHeaders(),
     });
@@ -20,6 +19,7 @@ export async function getUserFragments(user) {
     }
     const data = await res.json();
     console.log('Got user fragments data:', { data });
+    return data.fragments;
   } catch (err) {
     console.error('Unable to call GET /v1/fragment', { err });
   }
@@ -42,7 +42,10 @@ export async function createFragmentData(user, fragmentData, type){
     }
     const data = await res.json();
     console.log('Metadata of created fragment:', { data });
+    return true;
+    //window.location.reload(false)
   } catch (err) {
     console.error('Unable to call POST /v1/fragments', { err });
+    return false;
   }
 }
