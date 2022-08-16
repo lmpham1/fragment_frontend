@@ -49,3 +49,46 @@ export async function createFragmentData(user, fragmentData, type){
     return false;
   }
 }
+
+export async function getFragmentData(user, fragmentId){
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+      headers: user.authorizationHeaders()
+    });
+    if (!res.ok){
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const contentType = res.headers.get("Content-Type");
+    if (contentType.includes("text/")){
+      return res.text();
+    }
+    else if (contentType.includes("application/json")){
+      return res.json();
+    } else if (contentType.includes("image/jpeg") || contentType.includes("image/png")){
+      return res.body;
+    }
+    else {
+      console.log(res.body);
+      console.log(contentType);
+      throw new Error("Unsupported Type");
+    }
+  } catch (err){
+    console.log(err);
+  }
+}
+
+export async function getFragmentMetadata(user, fragmentId){
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}/info`, {
+      headers: user.authorizationHeaders()
+    });
+    if (!res.ok){
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const fragmentMetadata = await res.json();
+    return fragmentMetadata;
+  } catch (err){
+    console.log(err);
+    return undefined;
+  }
+}

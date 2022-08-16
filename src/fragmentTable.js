@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getUserFragments } from "./api";
+import { getUserFragments, getFragmentData } from "./api";
 import { getUser } from "./auth";
 import { Table, Button, Collapse } from 'react-bootstrap';
 
@@ -28,7 +28,19 @@ export default function FragmentTable(){
     const FragmentListItem = (props) => {
         const fragment = props.fragment
         const [open, setOpen] = useState(false);
-            return (
+        const [data, setData] = useState();
+        const getData = async (fragmentId) => {
+            const user = await getUser();
+            const result = await getFragmentData(user, fragmentId)
+            setData(result);
+        }
+        useEffect(()=> {
+            if (!data) {
+                getData(fragment.id);
+                //console.log(data);
+            }
+        }, [fragment, data]);
+        return (
             <tr key={props.index}>
                 <td>
                     <Button onClick={() => setOpen(!open)}
@@ -39,6 +51,7 @@ export default function FragmentTable(){
                         {fragment.id}
                     </Button>
                     <Collapse in={open}>
+                        <div>
                         <ul className="fragment-details">
                             <li>id: {fragment.id}</li>
                             <li>type: {fragment.type}</li>
@@ -46,9 +59,36 @@ export default function FragmentTable(){
                             <li>updated: {fragment.updated}</li>
                             <li>size: {fragment.size}</li>
                         </ul>
+                        <h5>Data: </h5>
+                        <FragmentData data={data} type={fragment.type}/>
+                        </div>
                     </Collapse>
                 </td>
-            </tr>)
+            </tr>
+        )
+    }
+
+    function FragmentData(props){
+        const data = props.data;
+        const type = props.type;
+        console.log(data);
+        if (type.includes("text/plain")){
+            return(
+                <p>{data}</p>
+            )
+        }
+        if (type.includes("application/json")){
+            const prettyJSON = JSON.stringify(data, null, 2);
+            return(
+                <pre>{prettyJSON}</pre>
+            )
+        }
+        if (type.includes("image/png") || type.includes("image/jpeg")){
+            const imgsrc = `data:${type};base64,${data}`
+            return(
+                <img src={imgsrc} alt="fragment data"/>
+            )
+        }
     }
 
     return(

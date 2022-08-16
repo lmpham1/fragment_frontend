@@ -4,6 +4,12 @@ import { useEffect, useState } from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Button } from 'react-bootstrap';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 
 import { getUserFragments } from './api';
 import { Auth, getUser } from './auth';
@@ -11,6 +17,28 @@ import CreateFragment from './createFragment';
 import FragmentTable from './fragmentTable';
 
 function App() {
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Routes>
+          <Route exact path="/" element={<Home/>}/>
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+function Home() {
   let isSignedIn = true;
   async function signOut() {
     console.log("signing out");
@@ -38,7 +66,6 @@ function App() {
       );
     else return <></>;
   };
-
   return (
     <div className="App">
       <header className="App-header">
