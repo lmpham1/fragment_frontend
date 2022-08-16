@@ -87,7 +87,7 @@
   font-size: 16px;
 }
 
-.update-button, .delete-button{
+.button-container button{
   color: white !important;
   margin: 0.5rem 1rem;
 }

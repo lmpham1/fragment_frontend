@@ -1,7 +1,24 @@
 import { useEffect, useState, useLayoutEffect, useRef } from "react"
 import { getUserFragments, getFragmentData, updateFragmentData, deleteFragment } from "./api";
 import { getUser } from "./auth";
-import { Table, Button, Collapse, Modal, Form, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+import { Table, Button, Collapse, Modal, Form, FormGroup, FormControl, FormLabel, Dropdown } from 'react-bootstrap';
+
+const supportedTypes = {
+    text: [
+        "text/plain",
+        "text/html",
+        "text/markdown",
+    ],
+    json: [
+        "application/json"
+    ],
+    image: [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+    ]
+}
 
 export default function FragmentTable(){
     const [fragments, setFragments] = useState(undefined);
@@ -31,17 +48,19 @@ export default function FragmentTable(){
         const [data, setData] = useState();
         const [openModal, setOpenModal] = useState(false);
         const [openDeleteModal, setOpenDeleteModal] = useState(false);
-        const getData = async (fragmentId) => {
+        const [viewType, setViewType] = useState("");
+        const getData = async (fragmentId, viewType) => {
             const user = await getUser();
-            const result = await getFragmentData(user, fragmentId)
+            const result = await getFragmentData(user, fragmentId, viewType)
             setData(result);
+        };
+        const handleSelect = (key) => {
+            setViewType(key)
         }
         useEffect(()=> {
-            if (!data) {
-                getData(fragment.id);
-                //console.log(data);
-            }
-        }, [fragment, data]);
+            getData(fragment.id, viewType);
+            console.log(viewType);
+        }, [fragment, viewType]);
         return (
             <tr key={props.index}>
                 <td>
@@ -56,7 +75,7 @@ export default function FragmentTable(){
                         <div>
                         <ul className="fragment-details">
                             <li>id: {fragment.id}</li>
-                            <li>type: {fragment.type}</li>
+                            <li>type: {viewType !== "" ? viewType : fragment.type}</li>
                             <li>created: {fragment.created}</li>
                             <li>updated: {fragment.updated}</li>
                             <li>size: {fragment.size}</li>
@@ -66,6 +85,17 @@ export default function FragmentTable(){
                             <FragmentData data={data} type={fragment.type}/>
                         </div>
                         <div className="button-container">
+                            {fragment.type !== "application/json" &&
+                            <Dropdown onSelect={handleSelect}>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    View As
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <ViewAsDropdownItem type={fragment.type}/>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            }
                             <Button className="update-button" variant="info" onClick={() => setOpenModal(true)}>Update</Button>
                             <Button className="delete-button" variant="danger" onClick={() => setOpenDeleteModal(true)}>Delete</Button>
                         </div>
@@ -78,14 +108,21 @@ export default function FragmentTable(){
         )
     }
 
+    function ViewAsDropdownItem(props){
+        const mainType = props.type.substring(0, props.type.indexOf('/'));
+        return supportedTypes[mainType].map((type, idx) => {
+            return <Dropdown.Item key={idx} eventKey={type}>{type}</Dropdown.Item>
+        })
+    }
+
     function FragmentData(props){
         const data = props.data;
         const type = props.type;
-        //console.log(data);
+        console.log(data);
         if (data){
             if (type.includes("text/plain")){
                 return(
-                    <p>{data}</p>
+                    <div dangerouslySetInnerHTML={ { __html: data}}></div>
                 )
             }
             if (type.includes("application/json")){

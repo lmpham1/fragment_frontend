@@ -50,9 +50,32 @@ export async function createFragmentData(user, fragmentData, type){
   }
 }
 
-export async function getFragmentData(user, fragmentId){
+export async function getFragmentData(user, fragmentId, viewType=""){
+  let url = `${apiUrl}/v1/fragments/${fragmentId}`;
+  switch(viewType){
+    case "text/plain":
+      break;
+    case "text/markdown":
+      url += ".md";
+      break;
+    case "image/png":
+      url += ".png";
+      break;
+    case "image/jpeg":
+      url += ".jpeg";
+      break;
+    case "image/webp":
+      url += ".webp";
+      break;
+    case "image/gif":
+      url += ".gif";
+      break;
+    default:
+      break;
+  }
+  
   try {
-    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+    const res = await fetch(url, {
       headers: user.authorizationHeaders()
     });
     if (!res.ok){
@@ -60,11 +83,11 @@ export async function getFragmentData(user, fragmentId){
     }
     const contentType = res.headers.get("Content-Type");
     if (contentType.includes("text/")){
-      return res.text();
+      return (await res.text()).toString();
     }
     else if (contentType.includes("application/json")){
       return res.json();
-    } else if (contentType.includes("image/jpeg") || contentType.includes("image/png")){
+    } else if (contentType.includes("image/")){
       return res.blob();
     }
     else {
