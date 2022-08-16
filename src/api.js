@@ -92,3 +92,46 @@ export async function getFragmentMetadata(user, fragmentId){
     return undefined;
   }
 }
+
+export async function updateFragmentData(user, fragmentData, type, fragmentId){
+  console.log(`Updating fragment...`, {fragmentData});
+  console.log(type);
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+      // Generate headers with the proper Authorization bearer token to pass
+      method: "PUT",
+      headers: {
+        ...user.authorizationHeaders(),
+        'Content-Type': type
+      },
+      body: type === 'application/json'? JSON.stringify(fragmentData) : fragmentData
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const data = await res.json();
+    console.log('Metadata of updated fragment:', { data });
+    return true;
+    //window.location.reload(false)
+  } catch (err) {
+    console.error('Unable to call PUT /v1/fragments', { err });
+    return false;
+  }
+}
+
+export async function deleteFragment(user, fragmentId){
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+      method: "DELETE",
+      headers: user.authorizationHeaders()
+    });
+    if (!res.ok){
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const result = await res.json();
+    return result.id;
+  } catch (err){
+    console.log(err);
+    return "Failed to delete!";
+  }
+}

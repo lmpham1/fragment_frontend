@@ -153,7 +153,7 @@ function CreateImageFragment() {
   return (
     <div>
       <FormGroup className="mb-3">
-        <FormLabel>Fragment Text:</FormLabel>
+        <FormLabel>Fragment Image:</FormLabel>
         <FormControl type="file" onChange={handleChange} accept="image/png, .png, image/jpeg, .jpg, image/webp, .webp, image/gif, .gif"/>
       </FormGroup>
       {selectedImage && (
@@ -175,7 +175,7 @@ function DoneModal(props) {
   const handleClose = () => {
     props.setOpenModal("");
     window.location.reload(false);
-}
+  }
   return (
     <Modal show={props.openModal !== ""} onHide={handleClose}>
       {props.openModal === "success" && (
