@@ -35,7 +35,7 @@ export async function createFragmentData(user, fragmentData, type){
         ...user.authorizationHeaders(),
         'Content-Type': type
       },
-      body: JSON.stringify(fragmentData)
+      body: type === 'application/json'? JSON.stringify(fragmentData) : fragmentData
     });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
@@ -65,7 +65,7 @@ export async function getFragmentData(user, fragmentId){
     else if (contentType.includes("application/json")){
       return res.json();
     } else if (contentType.includes("image/jpeg") || contentType.includes("image/png")){
-      return res.body;
+      return res.blob();
     }
     else {
       console.log(res.body);

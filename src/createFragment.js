@@ -40,9 +40,19 @@ export default function CreateFragment() {
             JSON
           </Button>
         </li>
+        <li>
+          <Button
+            className={formType === "image" ? "active" : ""}
+            value="image"
+            onClick={handleFormTypeChange}
+          >
+            Image
+          </Button>
+        </li>
       </ul>
       {formType === "text" && <CreateTextFragment></CreateTextFragment>}
       {formType === "JSON" && <CreateJSONFragment></CreateJSONFragment>}
+      {formType === "image" && <CreateImageFragment></CreateImageFragment>}
     </div>
   );
 }
@@ -119,6 +129,40 @@ function CreateTextFragment() {
         <FormLabel>Fragment Text:</FormLabel>
         <FormControl type="text" value={value} onChange={handleChange} />
       </FormGroup>
+      <Button variant="primary" onClick={handleSubmit}>
+        Submit
+      </Button>
+      <DoneModal openModal={openModal} setOpenModal={setOpenModal} />
+    </div>
+  );
+}
+
+function CreateImageFragment() {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [openModal, setOpenModal] = useState("");
+  const handleSubmit = async function () {
+    //console.log("handled submission " + value);
+    const user = await getUser()
+    const result = await createFragmentData(user, selectedImage, selectedImage.type);
+    setOpenModal(result ? "success" : "failed");
+  };
+  const handleChange = function (e) {
+    const imageFile = e.target.files[0];
+    setSelectedImage(imageFile);
+  };
+  return (
+    <div>
+      <FormGroup className="mb-3">
+        <FormLabel>Fragment Text:</FormLabel>
+        <FormControl type="file" onChange={handleChange} accept="image/png, .png, image/jpeg, .jpg, image/webp, .webp, image/gif, .gif"/>
+      </FormGroup>
+      {selectedImage && (
+        <div>
+        <img alt="uploaded file" width={"250px"} src={URL.createObjectURL(selectedImage)} />
+        <br />
+        <Button variant="danger" onClick={()=>setSelectedImage(null)}>Remove</Button>
+        </div>
+      )}
       <Button variant="primary" onClick={handleSubmit}>
         Submit
       </Button>

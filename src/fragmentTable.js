@@ -72,6 +72,7 @@ export default function FragmentTable(){
         const data = props.data;
         const type = props.type;
         console.log(data);
+        if (data){
         if (type.includes("text/plain")){
             return(
                 <p>{data}</p>
@@ -83,12 +84,12 @@ export default function FragmentTable(){
                 <pre>{prettyJSON}</pre>
             )
         }
-        if (type.includes("image/png") || type.includes("image/jpeg")){
-            const imgsrc = `data:${type};base64,${data}`
+        if (type.startsWith("image/")){
             return(
-                <img src={imgsrc} alt="fragment data"/>
+                <img src={URL.createObjectURL(data)} width={250} alt="fragment"/>
             )
         }
+    }
     }
 
     return(
