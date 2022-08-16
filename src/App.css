@@ -86,3 +86,17 @@
 .fragment-details li{
   font-size: 16px;
 }
+
+.update-button, .delete-button{
+  color: white !important;
+  margin: 0.5rem 1rem;
+}
+
+.button-container{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.data-container{
+  font-size:1rem !important;
+}

@@ -62,9 +62,13 @@ export default function FragmentTable(){
                             <li>size: {fragment.size}</li>
                         </ul>
                         <h5>Data: </h5>
-                        <FragmentData data={data} type={fragment.type}/>
-                        <Button variant="info" onClick={() => setOpenModal(true)}>Update</Button>
-                        <Button variant="danger" onClick={() => setOpenDeleteModal(true)}>Delete</Button>
+                        <div className="data-container">
+                            <FragmentData data={data} type={fragment.type}/>
+                        </div>
+                        <div className="button-container">
+                            <Button className="update-button" variant="info" onClick={() => setOpenModal(true)}>Update</Button>
+                            <Button className="delete-button" variant="danger" onClick={() => setOpenDeleteModal(true)}>Delete</Button>
+                        </div>
                         <UpdateModal metadata={fragment} data={data} openModal={openModal} setOpenModal={setOpenModal}></UpdateModal>
                         <DeleteModal id={fragment.id} openModal={openDeleteModal} setOpenModal={setOpenDeleteModal}></DeleteModal>
                         </div>
