@@ -148,12 +148,12 @@ export default function FragmentTable(){
         const [isValid, setIsValid] = useState(false);
         const [hasChanged, setHasChanged] = useState(false);
         useEffect(() => {
-            if(data){
+            if(data && !newData && !hasChanged){
                 setNewData(data)
             }
-        }, [data])
+        }, [data, newData, hasChanged]);
         useEffect(() => {
-            if (hasChanged){
+            if (hasChanged && !isValid){
                 if (metadata.type.startsWith('text/')){
                     setIsValid(newData && newData !== '' ? true : false)
                 } else if (metadata.type.startsWith('application/json')){
@@ -167,26 +167,27 @@ export default function FragmentTable(){
                 }
             }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [newData])
+        }, [newData, hasChanged, isValid])
         useLayoutEffect(() => {
             async function submitData() {
               const user = await getUser();
               await updateFragmentData(user, newData, metadata.type, metadata.id);
+              setOpenModal(false);
+              window.location.reload(false);
             }
             if (firstRender.current) {
               firstRender.current = false;
               return;
             }
-            if (isValid) {
+            if (isValid && hasChanged) {
                 setHasChanged(false);
                 submitData();
-                setOpenModal(false);
-                window.location.reload(false);
             };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [newData, isValid, setOpenModal]);
+        }, [newData, isValid, hasChanged]);
         const handleImageChange = (newImage) => {
             setNewData(newImage);
+            setHasChanged(true);
         }
         const handleClose = () => {
             props.setOpenModal(false);
